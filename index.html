@@ -90,7 +90,7 @@ select:focus{outline:none;border-color:var(--teal)}
     </div>
   </div>
   <div class="hmeta">
-    <div class="hdate">Report Date: 09 June 2026 &nbsp;&middot;&nbsp; Source: MRP - Jun 04062026 Final5.xlsm</div>
+    <div class="hdate">Report Date: <span id="hReportDate"></span> &nbsp;&middot;&nbsp; Source: <span id="hSourceFile"></span></div>
   </div>
 </div>
 <div class="fbar">
@@ -348,7 +348,7 @@ select:focus{outline:none;border-color:var(--teal)}
   <div class="src" style="margin-top:8px">PO Follow Up tab &middot; Spend column &middot; updates with facility filter &middot; click tile or chart segment to drill down</div>
 </div>
 </div>
-<div class="ftr">Ahmed Kamal &middot; VP Operations Reporting &nbsp;|&nbsp; <span>K Line / Procurement Dashboard</span> &nbsp;|&nbsp; Source: <span>MRP-Jun-04062026-Final5.xlsm</span> &nbsp;|&nbsp; 09 June 2026</div>
+<div class="ftr">Ahmed Kamal &middot; VP Operations Reporting &nbsp;|&nbsp; <span>K Line / Procurement Dashboard</span> &nbsp;|&nbsp; Source: <span id="ftrSourceFile"></span> &nbsp;|&nbsp; <span id="ftrReportDate"></span></div>
 
 
 <!-- Air vs Sea Shipment Detail Modal -->
@@ -1313,6 +1313,15 @@ function render(recs,f){
 // INIT
 function init(){
   var recs=PO, f=getF();
+  // Report date + source file — updated dynamically from _D on every run
+  (function(){
+    var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var now=new Date();
+    var dateStr=now.getDate()+' '+months[now.getMonth()]+' '+now.getFullYear();
+    var src=_D.sourceFile||'';
+    ['hReportDate','ftrReportDate'].forEach(function(id){var el=g(id);if(el)el.textContent=dateStr;});
+    ['hSourceFile','ftrSourceFile'].forEach(function(id){var el=g(id);if(el)el.textContent=src;});
+  })();
   // build coverage opts list once
   window._covOpts=(_D.covItems||[]).map(function(c){return{code:c.itemCode,name:c.itemName||''};});
   initCovItemDropdown();
