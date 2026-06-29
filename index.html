@@ -606,8 +606,8 @@ function openFacModal(fac,recs){
   var openTotal=openInvs.reduce(function(s,k){return s+openGrp[k].length;},0);
   var delTotal=delInvs.reduce(function(s,k){return s+delGrp[k].length;},0);
   g('modalTitle').textContent=fac+'  -  Open & Delivered POs';
-  g('openCount').textContent='Open POs  -  '+openInvs.length+' invoices / '+openTotal+' lines';
-  g('delCount').textContent='Delivered POs  -  '+delInvs.length+' invoices / '+delTotal+' lines';
+  g('openCount').textContent='Open POs — '+openInvs.length+' invoices / '+openTotal+' lines';
+  g('delCount').textContent='Delivered POs — '+delInvs.length+' invoices / '+delTotal+' lines';
 
   // Helper: render grouped rows
   function renderGrp(tbodyId,invList,grp,cols,colorVar){
@@ -651,7 +651,7 @@ function openFacModal(fac,recs){
 function closeModal(){g('facModal').classList.remove('open');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'){closeModal();closeShipModal();closeDIModal();}});
 
-// GIT DETAIL  -  full line breakdown with facility + item filters
+// GIT DETAIL — full line breakdown with facility + item filters
 var gitItemSel='';
 function initGITItemDropdown(){
   var opts=(_D.gitItemList||[]).slice();
@@ -845,7 +845,7 @@ function renderShortage(){
 
 // PAYMENT TABLE
 function renderPayments(){
-  // KPI counts from payDetails (individual invoices)  -  amounts same either way
+  // KPI counts from payDetails (individual invoices) — amounts same either way
   var det=_D.payDetails||[];
   var ovDet=det.filter(function(r){return r.status==='Overdue'&&r.balance>0;});
   var upDet=det.filter(function(r){return r.status==='Outstanding'&&r.balance>0;});
@@ -1002,7 +1002,7 @@ var _lastShipType='';
 function openShipModal(type){
   _lastShipType=type;
   var lines=PO.filter(function(r){return getShipType(r.shippingMethod)===type;});
-  g('shipModalTitle').textContent=type+' Shipments  -  '+lines.length+' PO line'+(lines.length===1?'':'s');
+  g('shipModalTitle').textContent=type+' Shipments — '+lines.length+' PO line'+(lines.length===1?'':'s');
   var tb=g('shipModalBody'); tb.innerHTML='';
   if(!lines.length){
     tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:var(--mut);padding:16px">No shipments found</td></tr>';
@@ -1267,7 +1267,7 @@ function renderDirIndir(){
 function openDIModal(type){
   var recs=_diRecs||PO;
   var lines=recs.filter(function(r){return r.spendType===type;});
-  g('diModalTitle').textContent=type+' POs  -  '+lines.length+' line'+(lines.length===1?'':'s');
+  g('diModalTitle').textContent=type+' POs — '+lines.length+' line'+(lines.length===1?'':'s');
   var tb=g('diModalBody'); tb.innerHTML='';
   if(!lines.length){
     tb.innerHTML='<tr><td colspan="5" style="text-align:center;color:var(--mut);padding:16px">No POs found</td></tr>';
