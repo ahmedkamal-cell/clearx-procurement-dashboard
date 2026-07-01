@@ -516,10 +516,15 @@ function flt(f){
     return true;
   });
 }
+// A line is considered "closed" (no longer in transit) the same way GIT does:
+// deliveryStatus===1 OR it already has a Facility Arrival date recorded.
+// Keeping this in one place so the KPI, facility chart, and modal all agree
+// with the Goods In Transit breakdown on what counts as "open".
+function isClosedLine(p){ return p.deliveryStatus===1 || p.facilityArrival!=null; }
 function invCount(recs){
   var g2={},op=0,dl=0;
   recs.forEach(function(p){var k=(p.invoiceNo||'').trim();if(!k||k==='None')return;if(!g2[k])g2[k]=[];g2[k].push(p);});
-  Object.values(g2).forEach(function(a){a.every(function(p){return p.deliveryStatus===1;})?dl++:op++;});
+  Object.values(g2).forEach(function(a){a.every(isClosedLine)?dl++:op++;});
   return{total:op+dl,open:op,del:dl};
 }
 
@@ -565,7 +570,7 @@ function mkFac(f){
     var k=(p.invoiceNo||'')+'_'+p.facility;
     if(!p.invoiceNo||p.invoiceNo==='None')return;
     if(seen[k])return; seen[k]=1;
-    p.deliveryStatus===1?gr[p.facility].dl++:gr[p.facility].op++;
+    isClosedLine(p)?gr[p.facility].dl++:gr[p.facility].op++;
   });
   var rows=FACS.map(function(fc){var o=gr[fc].op,d=gr[fc].dl,t=o+d||1;return{fac:fc,op:o,dl:d,opP:+(o/t*100).toFixed(1),dP:+(d/t*100).toFixed(1),tot:o+d};}).filter(function(r){return r.tot>0;});
   mk('cFac',{type:'bar',data:{labels:rows.map(function(r){return r.fac;}),datasets:[
@@ -594,7 +599,7 @@ function openFacModal(fac,recs){
   recs.forEach(function(p){
     if(p.facility!==fac) return;
     var k=(p.invoiceNo||'').trim(); if(!k||k==='None') return;
-    if(p.deliveryStatus===1){
+    if(isClosedLine(p)){
       if(!delGrp[k]){delGrp[k]=[];delInvs.push(k);}
       delGrp[k].push(p);
     } else {
