@@ -545,7 +545,11 @@ function renderKPIs(recs,f){
     savArr=_D.monSaveByFac[f.f];
   else savArr=_D.monSave;
   if(f.m){var mi=+f.m-1;savArr=savArr.map(function(v,i){return i===mi?v:null;});}
-  var totalSav=savArr.reduce(function(s,v){return s+(v||0);},0);
+  // Unfiltered headline uses the authoritative YTD total from the "EXW Price Saving %" tab
+  // (KPI.totalSaving). The savArr sum is the "Saving Analysis" per-cat/fac/month breakdown,
+  // a slightly smaller universe - use it only when a filter is active (the only source that
+  // supports drill-down). Prevents the headline reading low (117.4K vs correct 120.5K).
+  var totalSav=noF?KPI.totalSaving:savArr.reduce(function(s,v){return s+(v||0);},0);
   var spendForRate=recs.reduce(function(s,p){return s+p.poAmount;},0)||KPI.ytdSpend;
   g('kSv').textContent=totalSav>=1000?'$'+(totalSav/1000).toFixed(1)+'K':'$'+Math.round(totalSav);
   g('kSvT').textContent=(spendForRate>0?(totalSav/spendForRate*100).toFixed(1):0)+'% savings rate'+(f.c?' ['+cN(f.c)+']':'');
